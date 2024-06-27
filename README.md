@@ -1,2 +1,2 @@
-Update the inventory file and execute ./run.sh  </br>
-htpass for apache webserver: gerald
+1. Update the inventory file and execute ./run.sh  </br>
+2. htpass for apache webserver: gerald
