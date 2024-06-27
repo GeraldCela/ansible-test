@@ -1,0 +1,10 @@
+<html>
+<body>
+<h1>DB servers list:</h1>
+
+{% for host in groups['db_servers'] %}
+<h3>- {{ host }}: {{ hostvars[host]['ansible_host'] }} </h3>
+{% endfor %}
+
+</body>
+</html>

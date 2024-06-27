@@ -1,0 +1,5 @@
+all:
+  hosts:
+     gnode2:
+       ansible_host: 192.168.0.12
+       ansible_user: root

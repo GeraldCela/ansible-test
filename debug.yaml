@@ -1,0 +1,6 @@
+- name: Debug
+  debug:
+    var: apache2_status.stdout
+
+- name: Debug vars
+  debug: msg="Hello, {{ name }}!"

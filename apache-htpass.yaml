@@ -1,0 +1,76 @@
+---
+- name: Install Apache and configure HTTP Basic Authentication
+  hosts: web_servers
+  become: yes
+
+  vars_files:
+    - secrets.yaml  
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Enable Apache modules
+      apache2_module:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - auth_basic
+        - authn_file
+        - authz_core
+        - authz_host
+        - authz_user
+
+    - name: Create htpasswd file
+      command: htpasswd -c -b /etc/apache2/.htpasswd gerald "{{ httpass }}"
+      vars:
+        htpass: "{{ vault_httpass }}"
+
+#    - name: Create a test HTML page
+#      copy:
+#        content: "<html><body><h1>Test Page</h1></body></html>"
+#        dest: /var/www/html/index.html
+
+    - name: Copy index to remote host
+      template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+
+    - name: Copy list of DB hosts to remote host
+      template:
+        src: list.html.j2
+        dest: /var/www/html/list.html
+      ignore_errors: yes     
+ 
+    - name: Configure Apache site
+      template:
+        src: 000-default.conf
+        dest: /etc/apache2/sites-enabled/000-default.conf
+
+    - command: service apache2 status
+      register: command_output
+      failed_when: "'error' in command_output.stdout"
+
+    - name: Check service status with systemctl
+      shell: systemctl is-active apache2 || true
+      register: apache2_status
+      ignore_errors: yes
+
+    - name: Include vars from another file
+      include_vars: vars.yaml
+
+    - name: Includ the Debug task from another file
+      include_tasks: debug.yaml       
+
+    - name: Start Apache service if not running
+      systemd:
+        name: apache2
+        state: started
+      when: apache2_status.stdout == "inactive"
+
+    - name: Reload Apache service if already running
+      systemd:
+        name: apache2
+        state: reloaded
+      when: apache2_status.stdout == "active"
