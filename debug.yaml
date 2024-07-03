@@ -2,3 +2,11 @@
   debug:
     var: apache2_status.stdout
 
+- block:
+  - name: Display name when defined
+    debug:
+      msg: "Hello: {{ name }}"
+  rescue:
+  - name: When name is not defined
+    debug:
+      msg: "Hello World"
