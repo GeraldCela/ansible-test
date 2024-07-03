@@ -69,13 +69,5 @@
         name: apache2
         state: reloaded
       when: apache2_status.stdout == "active"
- 
-    - block:
-        - name: Display name when defined
-          debug:
-            msg: "Hello: {{ name }}"
-      rescue:
-        - name: When name is not defined
-          debug:
-            msg: "Hello Stranger"
+
       
