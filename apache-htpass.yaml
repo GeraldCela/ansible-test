@@ -27,11 +27,6 @@
       vars:
         htpass: "{{ vault_httpass }}"
 
-#    - name: Create a test HTML page
-#      copy:
-#        content: "<html><body><h1>Test Page</h1></body></html>"
-#        dest: /var/www/html/index.html
-
     - name: Copy index to remote host
       template:
         src: index.html.j2
