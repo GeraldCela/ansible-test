@@ -1,4 +1,5 @@
 - name: Debug
+  when: apache2_status is defined
   debug:
     var: apache2_status.stdout
 
